@@ -1,0 +1,46 @@
+<caltime>
+    1575600279
+</caltime>
+
+<info>
+    <pin>RFIN_L_pin</pin>
+    <gain>0 </gain>
+    <atten>-36e6 </atten>
+    <powers>
+        <power> 0 </power>
+        <power> -5 </power>
+    </powers>
+</info>
+
+<factors>
+    <pin> RFIN_L_pin </pin>
+    <freq> 824e6 </freq>
+    <power> 0  </power>
+    <site> 1 </site>
+    <value> -36.1 </value>
+</factors>
+
+<factors>
+    <pin> RFIN_H_pin </pin>
+    <freq> 824e6 </freq>
+    <power> 0  </power>
+    <site> 1 </site>
+    <value> -36.1 </value>
+</factors>
+
+<factors>
+    <pin> ANT_H_pin </pin>
+    <freq> 824e6 </freq>
+    <power> 0  </power>
+    <site> 1 </site>
+    <value> -36.1 </value>
+</factors>
+
+<factors>
+    <pin> ANT_L_pin </pin>
+    <freq> 824e6 </freq>
+    <power> 0  </power>
+    <site> 1 </site>
+    <value> -36.1 </value>
+</factors>
+

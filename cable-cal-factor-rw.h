@@ -6,10 +6,18 @@
 class CableLoss
 {
  public:
-  // [pin][freq][power][site] => double
-  typedef std::map<std::string, std::map<double, std::map<double, std::map<int, double> > > > FactorType;
-  // [pin][gain][atten][power] => double
-  // typedef std::map<std::string, std::map<double, std::map<double, std::map<int, double> > > > FactorType;
+  struct Key
+  {
+    Key(std::string pinName, double frequency, double power, int site);
+    std::string pin;
+    double freq;
+    double power;
+    int site;
+    bool operator<(const Key& rhs) const;
+    bool operator==(const Key& rhs) const;
+  };
+  // [ (pin, freq, power, site) ] => double
+  typedef std::map<Key, double> FactorType;
 
   void load(const std::string& filename);
   void save(const std::string& filename);
@@ -19,11 +27,13 @@ class CableLoss
   /** @brief print pin config. */
   void printConfig() const;
   /** @grief get cal factor with pin/freq/power/site. */
-  double getCalFactor(const std::string& name, double freq, double power, int site) const;
+  double get(const Key& key) const;
+  double get(const std::string& name, double freq, double power,
+             int site) const;
 
  private:
   int time;  // cal date
-  FactorType factors;
+  std::map<Key, double> factors;
 };
 
 class CableConfig

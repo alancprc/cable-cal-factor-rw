@@ -5,7 +5,7 @@
 <info>
     <pin>RFIN_L_pin</pin>
     <gain>0 </gain>
-    <atten>-36e6 </atten>
+    <atten>-36 </atten>
     <powers>
         <power> 0 </power>
         <power> -5 </power>

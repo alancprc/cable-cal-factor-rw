@@ -19,12 +19,28 @@
 #include <map>
 #include <sstream>
 #include <string>
-#include <cstdio>
 
 using namespace std;
 namespace pt = boost::property_tree;
 
-void CableLoss::load(const std::string& filename)
+CableLoss::Key::Key(string pinName, double frequency, double power, int site)
+    : pin(pinName), freq(frequency), power(power), site(site)
+{
+}
+
+bool CableLoss::Key::operator<(const Key& rhs) const
+{
+  return pin < rhs.pin or freq < rhs.freq or power < rhs.power or
+         site < rhs.site;
+}
+
+bool CableLoss::Key::operator==(const Key& rhs) const
+{
+  return pin == rhs.pin and freq == rhs.freq and power == rhs.power and
+         site == rhs.site;
+}
+
+void CableLoss::load(const string& filename)
 {
   pt::ptree tree;
   pt::read_xml(filename, tree, pt::xml_parser::trim_whitespace);
@@ -36,12 +52,11 @@ void CableLoss::load(const std::string& filename)
       double gain = v.second.get<double>("gain");
       double atten = v.second.get<double>("atten");
 
-      cout << "pin: " << pin
-           << "\tgain: " << gain
-           << "\tatten: " << atten;
+      cout << "pin: " << pin << "\tgain: " << gain << "\tatten: " << atten
+           << "\tpowers:";
 
       BOOST_FOREACH (pt::ptree::value_type& f, v.second.get_child("powers")) {
-        cout << "\t" << f.second.get<double>("");
+        cout << " " << f.second.get<double>("");
       }
       cout << endl;
     } else if (v.first == "factors") {
@@ -50,39 +65,33 @@ void CableLoss::load(const std::string& filename)
       double power = v.second.get<double>("power");
       int site = v.second.get<int>("site");
       double value = v.second.get<double>("value");
-      factors[pin][freq][power][site] = value;
+
+      factors[Key(pin, freq, power, site)] = value;
     }
   }
 }
 
-double CableLoss::getCalFactor(const std::string& name, double freq,
-                               double power, int site) const
+double CableLoss::get(const string& name, double freq, double power,
+                      int site) const
 {
-  return factors.at(name).at(freq).at(power).at(site);
+  Key key(name, freq, power, site);
+  return factors.at(key);
 }
 
-void CableLoss::printConfig() const
-{
-}
+double CableLoss::get(const Key& key) const { return factors.at(key); }
+
+void CableLoss::printConfig() const {}
 
 void CableLoss::print() const
 {
-  std::ostringstream oss;
-  for (FactorType::const_iterator pin = factors.begin(); pin != factors.end(); ++pin) {
-    for (FactorType::mapped_type::const_iterator freq = pin->second.begin(); freq != pin->second.end(); ++freq) {
-      for (FactorType::mapped_type::mapped_type::const_iterator pwr = freq->second.begin(); pwr != freq->second.end(); ++pwr) {
-        for (FactorType::mapped_type::mapped_type::mapped_type::const_iterator si = pwr->second.begin(); si != pwr->second.end(); ++si) {
-          // clang-format off
-          oss << "pin: " << pin->first << ";\t"
-              << "freq: " << freq->first << ";\t"
-              << "power: " << pwr->first << ";\t"
-              << "site: " << si->first << ";\t"
-              << "factor: " << si->second << ";\t"
-              << endl;
-          // clang-format on
-        }
-      }
-    }
+  ostringstream oss;
+  for (FactorType::const_iterator it = factors.begin(); it != factors.end();
+       ++it) {
+    oss << "pin: " << it->first.pin << ";\t"
+        << "freq: " << it->first.freq << ";\t"
+        << "power: " << it->first.power << ";\t"
+        << "site: " << it->first.site << ";\t"
+        << "factor: " << it->second << ";\t" << endl;
   }
   cout << oss.str();
 }

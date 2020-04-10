@@ -27,13 +27,12 @@ namespace pt = boost::property_tree;
 void CableLoss::load(const std::string& filename)
 {
   pt::ptree tree;
-  pt::read_xml(filename, tree);
+  pt::read_xml(filename, tree, pt::xml_parser::trim_whitespace);
   time = tree.get("caltime", 0);
 
   BOOST_FOREACH (pt::ptree::value_type& v, tree.get_child("")) {
     if (v.first == "info") {
       string pin = v.second.get<string>("pin");
-      pin = removeWhiteSpace(pin);
       double gain = v.second.get<double>("gain");
       double atten = v.second.get<double>("atten");
 
@@ -47,7 +46,6 @@ void CableLoss::load(const std::string& filename)
       cout << endl;
     } else if (v.first == "factors") {
       string pin = v.second.get<string>("pin");
-      pin = removeWhiteSpace(pin);
       double freq = v.second.get<double>("freq");
       double power = v.second.get<double>("power");
       int site = v.second.get<int>("site");

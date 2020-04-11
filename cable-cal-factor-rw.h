@@ -15,6 +15,7 @@ class CableLoss
     int site;
     bool operator<(const Key& rhs) const;
     bool operator==(const Key& rhs) const;
+    std::ostream& operator<<(std::ostream& os) const;
   };
   // [ (pin, freq, power, site) ] => double
   typedef std::map<Key, double> FactorType;

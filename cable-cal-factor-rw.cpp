@@ -63,6 +63,11 @@ bool CableLoss::Key::operator==(const Key& rhs) const
          site == rhs.site;
 }
 
+std::ostream& CableLoss::Key::operator<<(std::ostream& os) const
+{
+  return os << pin << ", " << freq << ", " << power << ", " << site << endl;
+}
+
 void CableLoss::load(const string& filename)
 {
   pt::ptree tree;
@@ -128,7 +133,7 @@ void CableLoss::printConfig() const {}
 void CableLoss::print() const
 {
   ostringstream oss;
-  for (FactorType::const_iterator it = factors.begin(); it != factors.end();
+  for (FactorType::const_iterator it = factors.cbegin(); it != factors.cend();
        ++it) {
     oss << "pin: " << it->first.pin << ";\t"
         << "freq: " << it->first.freq << ";\t"

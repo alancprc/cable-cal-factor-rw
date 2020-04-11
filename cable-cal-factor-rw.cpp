@@ -14,12 +14,12 @@
 #include <boost/foreach.hpp>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
+#include <ctime>
 #include <exception>
 #include <iostream>
 #include <map>
 #include <sstream>
 #include <string>
-#include <cstdio>
 
 using namespace std;
 namespace pt = boost::property_tree;
@@ -36,9 +36,7 @@ void CableLoss::load(const std::string& filename)
       double gain = v.second.get<double>("gain");
       double atten = v.second.get<double>("atten");
 
-      cout << "pin: " << pin
-           << "\tgain: " << gain
-           << "\tatten: " << atten;
+      cout << "pin: " << pin << "\tgain: " << gain << "\tatten: " << atten;
 
       BOOST_FOREACH (pt::ptree::value_type& f, v.second.get_child("powers")) {
         cout << "\t" << f.second.get<double>("");
@@ -55,29 +53,54 @@ void CableLoss::load(const std::string& filename)
   }
 }
 
-double CableLoss::getCalFactor(const std::string& name, double freq,
-                               double power, int site) const
+void CableLoss::save(const string& filename) const
+{
+  pt::ptree tree;
+  time_t now;
+  std::time(&now);
+  tree.put("caltime", long(now));
+
+  BOOST_FOREACH (const FactorType::value_type& pin, factors) {
+    BOOST_FOREACH (const FreqMap::value_type& freq, pin.second) {
+      BOOST_FOREACH (const PwrMap::value_type& pwr, freq.second) {
+        BOOST_FOREACH (const SiteMap::value_type& si, pwr.second) {
+          pt::ptree child;
+          child.add("pin", pin.first);
+          child.add("freq", freq.first);
+          child.add("power", pwr.first);
+          child.add("site", si.first);
+          child.add("value", si.second);
+          tree.add_child("factors", child);
+        }
+      }
+    }
+  }
+  pt::xml_writer_settings<char> settings('\t', 1);
+  pt::write_xml(filename, tree, std::locale(), settings);
+}
+
+double CableLoss::get(const string& name, double freq, double power,
+                      int site) const
 {
   return factors.at(name).at(freq).at(power).at(site);
 }
 
-void CableLoss::printConfig() const
-{
-}
+void CableLoss::printConfig() const {}
 
 void CableLoss::print() const
 {
   std::ostringstream oss;
-  for (FactorType::const_iterator pin = factors.begin(); pin != factors.end(); ++pin) {
-    for (FactorType::mapped_type::const_iterator freq = pin->second.begin(); freq != pin->second.end(); ++freq) {
-      for (FactorType::mapped_type::mapped_type::const_iterator pwr = freq->second.begin(); pwr != freq->second.end(); ++pwr) {
-        for (FactorType::mapped_type::mapped_type::mapped_type::const_iterator si = pwr->second.begin(); si != pwr->second.end(); ++si) {
+
+  BOOST_FOREACH (const FactorType::value_type& pin, factors) {
+    BOOST_FOREACH (const FreqMap::value_type& freq, pin.second) {
+      BOOST_FOREACH (const PwrMap::value_type& pwr, freq.second) {
+        BOOST_FOREACH (const SiteMap::value_type& si, pwr.second) {
           // clang-format off
-          oss << "pin: " << pin->first << ";\t"
-              << "freq: " << freq->first << ";\t"
-              << "power: " << pwr->first << ";\t"
-              << "site: " << si->first << ";\t"
-              << "factor: " << si->second << ";\t"
+          oss << "pin: " << pin.first << ";\t"
+              << "freq: " << freq.first << ";\t"
+              << "power: " << pwr.first << ";\t"
+              << "site: " << si.first << ";\t"
+              << "factor: " << si.second << ";\t"
               << endl;
           // clang-format on
         }

@@ -19,6 +19,7 @@
 #include <map>
 #include <sstream>
 #include <string>
+#include <ctime>
 
 using namespace std;
 namespace pt = boost::property_tree;
@@ -91,6 +92,26 @@ void CableLoss::load(const string& filename)
       factors[Key(pin, freq, power, site)] = value;
     }
   }
+}
+
+void CableLoss::save(const string& filename)
+{
+  pt::ptree tree;
+  time_t now;
+  std::time(&now);
+  tree.put("caltime", long(now));
+
+  for (auto it = factors.begin(); it != factors.end(); ++it) {
+    pt::ptree child;
+    child.add("pin", it->first.pin);
+    child.add("freq", double(it->first.freq));
+    child.add("power", it->first.power);
+    child.add("site", it->first.site);
+    child.add("value", it->second);
+    tree.add_child("factors", child);
+  }
+  pt::xml_writer_settings<char> settings('\t', 1);
+  pt::write_xml(filename, tree, std::locale(), settings);
 }
 
 double CableLoss::get(const string& name, double freq, double power,

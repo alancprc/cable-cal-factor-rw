@@ -44,4 +44,21 @@ TEST(CableLossTest, GetTest)
 
   CableLoss::Key invalidKey("RFIN_L_pin", 824e6, 0.0, 2);
   EXPECT_ANY_THROW(cl.get(invalidKey));
+
+  CableLoss::Key invalid("abc", 824e6, 0.0, 2);
+  EXPECT_ANY_THROW(cl.get(invalid));
+}
+
+TEST(CableLossTest, LoadSaveTest)
+{
+  CableLoss cl;
+  cl.load("sample.cf");
+  cl.save("sample.save");
+}
+
+TEST(CableLossTest, ReadSavedTest)
+{
+  CableLoss cl;
+  cl.load("sample.save");
+  cl.print();
 }

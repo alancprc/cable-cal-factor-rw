@@ -30,8 +30,30 @@ CableLoss::Key::Key(string pinName, double frequency, double power, int site)
 
 bool CableLoss::Key::operator<(const Key& rhs) const
 {
-  return pin < rhs.pin or freq < rhs.freq or power < rhs.power or
-         site < rhs.site;
+  if (pin < rhs.pin) {
+    return true;
+  } else if ( pin > rhs.pin ) {
+    return false;
+  }
+
+  if ( freq < rhs.freq ) {
+    return true;
+  } else if ( freq > rhs.freq ) {
+    return false;
+  }
+
+  if ( power < rhs.power ) {
+    return true;
+  } else if ( power > rhs.power ) {
+    return false;
+  }
+
+  if ( site < rhs.site ) {
+    return true;
+  } else if ( site > rhs.site ) {
+    return false;
+  }
+  return false;
 }
 
 bool CableLoss::Key::operator==(const Key& rhs) const

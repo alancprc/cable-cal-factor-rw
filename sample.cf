@@ -2,8 +2,8 @@
     1575600279
 </caltime>
 
-<infos>
-    <info>
+<configs>
+    <config>
         <pin>RFIN_L_pin</pin>
         <gain>0 </gain>
         <atten>-36e6 </atten>
@@ -11,8 +11,8 @@
             <power> 0 </power>
             <power> -5 </power>
         </powers>
-    </info>
-</infos>
+    </config>
+</configs>
 
 <factors>
     <factor>

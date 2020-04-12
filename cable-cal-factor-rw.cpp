@@ -91,6 +91,10 @@ void CableLoss::set(const std::string& name, double freq, double power,
   factors[name][freq][power][site] = value;
 }
 
+bool CableLoss::empty() const { return factors.empty(); }
+
+void CableLoss::init() { factors.clear(); }
+
 void CableLoss::printConfig() const {}
 
 void CableLoss::print() const

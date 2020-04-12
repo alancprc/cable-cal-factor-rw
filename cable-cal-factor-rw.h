@@ -29,6 +29,10 @@ class CableLoss
   /** @brief set cal factor with pin/freq/power/site. */
   void set(const std::string& name, double freq, double power, int site,
            double value);
+  /** @brief return true if empty. */
+  bool empty() const;
+  /** @brief initialize and clear data. */
+  void init();
 
  private:
   int time;  // cal date

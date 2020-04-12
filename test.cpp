@@ -40,3 +40,12 @@ TEST_F(CableLossTest, GetSetTest)
   EXPECT_NO_THROW(cl.get("a", 1, 1, 1));
   EXPECT_EQ(1.8, cl.get("a", 1, 1, 1));
 }
+
+TEST_F(CableLossTest, InitClearTest)
+{
+  EXPECT_TRUE(cl.empty());
+  cl.set("a", 1, 1, 1, 1);
+  EXPECT_FALSE(cl.empty());
+  cl.init();
+  EXPECT_TRUE(cl.empty());
+}

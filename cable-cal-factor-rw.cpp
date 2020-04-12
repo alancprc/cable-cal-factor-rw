@@ -30,26 +30,25 @@ void CableLoss::load(const std::string& filename)
   pt::read_xml(filename, tree, pt::xml_parser::trim_whitespace);
   time = tree.get("caltime", 0);
 
-  BOOST_FOREACH (pt::ptree::value_type& v, tree.get_child("")) {
-    if (v.first == "info") {
-      string pin = v.second.get<string>("pin");
-      double gain = v.second.get<double>("gain");
-      double atten = v.second.get<double>("atten");
+  BOOST_FOREACH (pt::ptree::value_type& v, tree.get_child("infos")) {
+    string pin = v.second.get<string>("pin");
+    double gain = v.second.get<double>("gain");
+    double atten = v.second.get<double>("atten");
 
-      cout << "pin: " << pin << "\tgain: " << gain << "\tatten: " << atten;
+    cout << "pin: " << pin << "\tgain: " << gain << "\tatten: " << atten;
 
-      BOOST_FOREACH (pt::ptree::value_type& f, v.second.get_child("powers")) {
-        cout << "\t" << f.second.get<double>("");
-      }
-      cout << endl;
-    } else if (v.first == "factors") {
-      string pin = v.second.get<string>("pin");
-      double freq = v.second.get<double>("freq");
-      double power = v.second.get<double>("power");
-      int site = v.second.get<int>("site");
-      double value = v.second.get<double>("value");
-      factors[pin][freq][power][site] = value;
+    BOOST_FOREACH (pt::ptree::value_type& f, v.second.get_child("powers")) {
+      cout << "\t" << f.second.get<double>("");
     }
+    cout << endl;
+  }
+  BOOST_FOREACH (pt::ptree::value_type& v, tree.get_child("factors")) {
+    string pin = v.second.get<string>("pin");
+    double freq = v.second.get<double>("freq");
+    double power = v.second.get<double>("power");
+    int site = v.second.get<int>("site");
+    double value = v.second.get<double>("value");
+    factors[pin][freq][power][site] = value;
   }
 }
 
@@ -70,7 +69,7 @@ void CableLoss::save(const string& filename) const
           child.add("power", pwr.first);
           child.add("site", si.first);
           child.add("value", si.second);
-          tree.add_child("factors", child);
+          tree.add_child("factors.factor", child);
         }
       }
     }

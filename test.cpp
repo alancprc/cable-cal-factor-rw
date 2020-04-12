@@ -29,3 +29,12 @@ TEST(CableLossTest, ReadSavedTest)
   cl.load("sample.save");
   cl.print();
 }
+
+TEST(CableLossTest, GetSetTest)
+{
+  CableLoss cl;
+  EXPECT_ANY_THROW(cl.get("a", 1, 1, 1));
+  cl.set("a", 1, 1, 1, 1.8);
+  EXPECT_NO_THROW(cl.get("a", 1, 1, 1));
+  EXPECT_EQ(1.8, cl.get("a", 1, 1, 1));
+}

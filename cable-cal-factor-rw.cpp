@@ -85,6 +85,12 @@ double CableLoss::get(const string& name, double freq, double power,
   return factors.at(name).at(freq).at(power).at(site);
 }
 
+void CableLoss::set(const std::string& name, double freq, double power,
+                    int site, double value)
+{
+  factors[name][freq][power][site] = value;
+}
+
 void CableLoss::printConfig() const {}
 
 void CableLoss::print() const

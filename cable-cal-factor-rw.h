@@ -14,7 +14,9 @@ class CableLoss
   // [pin][gain][atten][power] => double
   // typedef std::map<std::string, std::map<double, std::map<double, std::map<int, double> > > > FactorType;
  public:
+  /** @brief load cal data from file.*/
   void load(const std::string& filename);
+  /** @brief save cal data to file.*/
   void save(const std::string& filename) const;
 
   /** @brief print cal factors. */

@@ -31,16 +31,16 @@ void CableLoss::load(const std::string& filename)
   time = tree.get("caltime", 0);
 
   BOOST_FOREACH (pt::ptree::value_type& v, tree.get_child("configs")) {
-    string pin = v.second.get<string>("pin");
-    double gain = v.second.get<double>("gain");
-    double atten = v.second.get<double>("atten");
-
-    cout << "pin: " << pin << "\tgain: " << gain << "\tatten: " << atten;
+    CableConfig config;
+    config.pin = v.second.get<string>("pin");
+    config.gain = v.second.get<double>("gain");
+    config.atten = v.second.get<double>("atten");
 
     BOOST_FOREACH (pt::ptree::value_type& f, v.second.get_child("powers")) {
-      cout << "\t" << f.second.get<double>("");
+      double power = f.second.get<double>("");
+      config.powers.push_back(power);
     }
-    cout << endl;
+    configs.push_back(config);
   }
   BOOST_FOREACH (pt::ptree::value_type& v, tree.get_child("factors")) {
     string pin = v.second.get<string>("pin");
@@ -58,6 +58,18 @@ void CableLoss::save(const string& filename) const
   time_t now;
   std::time(&now);
   tree.put("caltime", long(now));
+
+  BOOST_FOREACH (const vector<CableConfig>::value_type& v, configs) {
+    pt::ptree child;
+    child.add("pin", v.pin);
+    child.add("gain", v.gain);
+    child.add("atten", v.atten);
+
+    BOOST_FOREACH (const vector<double>::value_type& p, v.powers) {
+      child.add("powers.power", p);
+    }
+    tree.add_child("configs.config", child);
+  }
 
   BOOST_FOREACH (const FactorType::value_type& pin, factors) {
     BOOST_FOREACH (const FreqMap::value_type& freq, pin.second) {

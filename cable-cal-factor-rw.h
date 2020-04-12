@@ -5,6 +5,15 @@
 
 class CableLoss
 {
+ public:
+  struct CableConfig
+  {
+    std::string pin;
+    double gain;
+    double atten;
+    std::vector<double> powers;
+  };
+
  private:
   typedef std::map<int, double> SiteMap;
   typedef std::map<double, SiteMap> PwrMap;
@@ -43,14 +52,5 @@ class CableLoss
  private:
   int time;  // cal date
   FactorType factors;
-};
-
-class CableConfig
-{
- public:
- private:
-  std::string name;
-  double gain;
-  double atten;
-  std::vector<double> powers;
+  std::vector<CableConfig> configs;
 };

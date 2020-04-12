@@ -23,7 +23,9 @@ class CableLoss
   void print() const;
   /** @brief print pin config. */
   void printConfig() const;
-  /** @brief get cal factor with pin/freq/power/site. */
+  /** @brief get cal factor with pin/freq/power/site.
+   *  return 0 if no cal factor was found.
+   * */
   double get(const std::string& name, double freq, double power,
              int site) const;
   /** @brief set cal factor with pin/freq/power/site. */
@@ -33,6 +35,10 @@ class CableLoss
   bool empty() const;
   /** @brief initialize and clear data. */
   void init();
+
+ private:
+  bool exist(const std::string& name, double freq, double power,
+             int site) const;
 
  private:
   int time;  // cal date

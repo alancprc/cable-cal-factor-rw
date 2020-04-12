@@ -18,7 +18,7 @@ TEST_F(CableLossTest, LoadTest)
 
   EXPECT_EQ(cl.get("RFIN_L_pin", 824e6, 0.0, 1), -36.1);
 
-  EXPECT_ANY_THROW(cl.get("RFIN_L_pin", 824e6, 0.0, 2));
+  EXPECT_EQ(cl.get("RFIN_L_pin", 824e6, 0.0, 2), 0);
 }
 
 TEST_F(CableLossTest, LoadSaveTest)
@@ -35,7 +35,7 @@ TEST_F(CableLossTest, ReadSavedTest)
 
 TEST_F(CableLossTest, GetSetTest)
 {
-  EXPECT_ANY_THROW(cl.get("a", 1, 1, 1));
+  EXPECT_EQ(cl.get("a", 1, 1, 1), 0);
   cl.set("a", 1, 1, 1, 1.8);
   EXPECT_NO_THROW(cl.get("a", 1, 1, 1));
   EXPECT_EQ(1.8, cl.get("a", 1, 1, 1));

@@ -82,7 +82,9 @@ void CableLoss::save(const string& filename) const
 double CableLoss::get(const string& name, double freq, double power,
                       int site) const
 {
-  return factors.at(name).at(freq).at(power).at(site);
+  if (exist(name, freq, power, site))
+    return factors.at(name).at(freq).at(power).at(site);
+  return 0;
 }
 
 void CableLoss::set(const std::string& name, double freq, double power,
@@ -94,6 +96,17 @@ void CableLoss::set(const std::string& name, double freq, double power,
 bool CableLoss::empty() const { return factors.empty(); }
 
 void CableLoss::init() { factors.clear(); }
+
+bool CableLoss::exist(const std::string& name, double freq, double power,
+                      int site) const
+{
+  // clang-format off
+  return factors.count(name) and
+      factors.at(name).count(freq) and
+      factors.at(name).at(freq).count(power) and
+      factors.at(name).at(freq).at(power).count(site);
+  // clang-format off
+}
 
 void CableLoss::printConfig() const {}
 
